@@ -1,4 +1,4 @@
-"""Clean archive extract
+"""Clean archive extract. Forces output directory to always contain a root directory.
 
 Examples:
     python archive-extract.py
@@ -21,10 +21,11 @@ import rarfile
 
 INPUT_DIR = join('demo', 'input')
 OUTPUT_DIR = join('demo', 'output')
-EXTENSIONS = ['*.zip', '*.tar', '*.tar.gz', '*.7z', '*.rar']
+EXTENSIONS_CATCH = ['*.zip', '*.tar', '*.tar.gz', '*.7z', '*.rar']
+EXTENSIONS = ['.zip', '.tar', '.tar.gz', '.7z', '.rar']
 
 filenames = []
-for ext in EXTENSIONS:
+for ext in EXTENSIONS_CATCH:
     filenames.extend(glob(join(INPUT_DIR, ext)))
 
 
@@ -74,18 +75,13 @@ def process_archive(filename: str):
     root_items = _get_root_items(filename)
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
-    # Base name for the output directory (remove all extensions)
     name = basename(filename)
-    for extension in ['.tar.gz', '.zip', '.tar', '.7z', '.rar']:
+    for extension in EXTENSIONS:
         if name.lower().endswith(extension):
             name = name[:-len(extension)]
             break
             
     out_dir = join(OUTPUT_DIR, name)
-    
-    # If the output directory already exists, we will extract into it.
-    # To handle potential race conditions and ensure a clean extraction,
-    # we use a temporary directory first.
     os.makedirs(out_dir, exist_ok=True)
 
     with tempfile.TemporaryDirectory() as temp_dir:
