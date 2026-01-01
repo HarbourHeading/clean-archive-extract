@@ -1,7 +1,7 @@
 """Clean archive extract
 
 Examples:
-    python main.py
+    python archive-extract.py
 
 Author: Harbourheading
 Creation: 2026-01-01
