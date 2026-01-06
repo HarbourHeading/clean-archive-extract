@@ -23,6 +23,8 @@ INPUT_DIR = join('demo', 'input')
 OUTPUT_DIR = join('demo', 'output')
 EXTENSIONS_CATCH = ['*.zip', '*.tar', '*.tar.gz', '*.7z', '*.rar']
 EXTENSIONS = ['.zip', '.tar', '.tar.gz', '.7z', '.rar']
+# Update to temporary directory path
+TEMP_DIR = ''
 
 filenames = []
 for ext in EXTENSIONS_CATCH:
@@ -69,6 +71,7 @@ def _extract(filename: str, path: str):
     elif py7zr.is_7zfile(filename):
         with py7zr.SevenZipFile(filename, mode='r') as f:
             f.extractall(path)
+    print(f"Extracted {filename}")
 
 
 def process_archive(filename: str):
@@ -84,7 +87,7 @@ def process_archive(filename: str):
     out_dir = join(OUTPUT_DIR, name)
     os.makedirs(out_dir, exist_ok=True)
 
-    with tempfile.TemporaryDirectory() as temp_dir:
+    with tempfile.TemporaryDirectory(dir=TEMP_DIR) as temp_dir:
         _extract(filename, temp_dir)
         if len(root_items) == 1:
             root_item = list(root_items)[0]
